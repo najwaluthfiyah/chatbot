@@ -1,0 +1,148 @@
+{
+  "name": "Tugas 2 AI",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi ! 👋\nNamaku Najwa Luthfiyah. Ingin bertanya terkait produk Pizzza Kami?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e652cbf9-95b6-4191-b615-c40caccece98",
+      "name": "When chat message received",
+      "webhookId": "502f9a26-f58f-4d88-9116-e7e51fa175bc"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Kamu adalah asisten toko pizza.\n\nJawablah pertanyaan pengguna hanya berdasarkan data yang tersedia pada tool Data Table.\n\nGunakan tool Data Table untuk mencari informasi menu pizza seperti nama pizza, deskripsi, dan harga.\n\nJika pengguna menanyakan menu seperti \"Pizza Choco Vanilla\", \"Pizza Sosis\", atau menu lainnya, cari datanya di tabel lalu berikan jawabannya secara langsung.\n\nJika menu tidak ditemukan di tabel, jawab: \"Maaf, menu tersebut belum tersedia di daftar pizza kami.\"\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        176,
+        16
+      ],
+      "id": "9bb61fbd-639e-4af4-9646-c87c226e61ad",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "47790cf5-d296-4277-b7b0-9e178bc2b6ee",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        80,
+        224
+      ],
+      "id": "26a3de01-bc70-4e14-81f7-de0bd6f57c29",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "JqzGk6DIgoDLBlgY",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "oKLeTpJG35vldB6O",
+          "mode": "list",
+          "cachedResultName": "menu",
+          "cachedResultUrl": "/projects/UOoztHuQPmGnrCjx/datatables/oKLeTpJG35vldB6O"
+        },
+        "matchType": "allConditions"
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        240
+      ],
+      "id": "47608b61-c687-4eeb-9873-8d5c6d011b98",
+      "name": "Get row(s) in Data table"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in Data table": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9d8920e8-d7d8-4d72-accb-6284b3a91425",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2c68dd9b50c1265ea679e4be566f92ef95878855a5408d6b9b67dfce153af032"
+  },
+  "id": "LU8KTbtNGs37xAoC",
+  "tags": []
+}
